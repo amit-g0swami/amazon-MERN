@@ -17,8 +17,6 @@ function Payment() {
     const [processing, setProcessing] = useState(false);
     const [succeded, setSucceded] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
-    const stripe = useStripe();
-    const element = useElements();
     const navigate = useNavigate();
     useEffect(() => {
         const getClientSecret = async () => {
@@ -30,6 +28,8 @@ function Payment() {
         };
         getClientSecret();
     }, [basket]);
+    const stripe = useStripe();
+    const element = useElements();
     const handleSubmit = async (event) => {
         event.preventDefault();
         setProcessing(true);
@@ -43,11 +43,9 @@ function Payment() {
                 setSucceded(true);
                 setError(null);
                 setProcessing(false);
-
                 dispatch({
                     type: "EMPTY_BASKET",
                 });
-
                 db.collection("users")
                     .doc(user?.uid)
                     .collection("orders")
@@ -57,15 +55,13 @@ function Payment() {
                         amount: paymentIntent,
                         created: paymentIntent.created,
                     });
-
-                navigate.replace("/orders");
+                navigate("/orders");
             });
     };
     const handleChange = async (event) => {
         setDisabled(event.empty);
         setError(event.error ? event.error.message : "");
-    }
-
+    };
     return (
         <div className="payment">
             <div className="payment__container">

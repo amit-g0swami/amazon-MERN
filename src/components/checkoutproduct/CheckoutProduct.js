@@ -2,6 +2,22 @@ import React from 'react'
 import "./CheckoutProduct.css";
 import { useStateValue } from "../StateProvider";
 
+const CheckoutProductWrapper = React.forwardRef(
+    ({ id, title, price, image, rating, hidden }, ref) => (
+        <div ref={ref}>
+            <CheckoutProduct
+                key={id}
+                id={id}
+                title={title}
+                price={price}
+                rating={rating}
+                image={image}
+                hidden={hidden}
+            />
+        </div>
+    )
+);
+
 function CheckoutProduct({ id, image, title, price, rating }) {
     const [{ basket }, dispatch] = useStateValue();
     const removeFromBasket = () => {

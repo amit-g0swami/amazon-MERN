@@ -10,6 +10,7 @@ import { auth } from "./firebase";
 import { useStateValue } from "./components/StateProvider";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import Orders from './components/orders/Orders';
 
 const promise = loadStripe(
   "pk_test_51KsOEdSGrxszazGjSLwq7bT0JrQ8UkecqlPzQ4puntAyehuLpSdPCMJqCV8hyQpDrkL8WzuGk5QJUZhy2hLr9ygj009dLui6rX"
@@ -18,7 +19,7 @@ const promise = loadStripe(
 function App() {
   const [{ }, dispatch] = useStateValue();
   useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         dispatch({
           type: "SET_USER",
@@ -31,7 +32,10 @@ function App() {
         });
       }
     });
-  }, []);
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch]);
 
   return (
     <Router>
@@ -41,6 +45,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/orders" element={<Orders />} />
           <Route path="/payment" element={<Elements stripe={promise}>
             <Payment />
           </Elements>} />
